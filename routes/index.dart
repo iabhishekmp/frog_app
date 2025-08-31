@@ -1,8 +1,11 @@
 import 'package:dart_frog/dart_frog.dart';
 
+int count = 0;
 Future<Response> onRequest(RequestContext context) async {
   final req = context.request;
   final body = {
+    'count': count++,
+    'time': DateTime.now().toString(),
     'method': req.method.value,
     'uri': req.uri.toString(),
     'url': req.url.toString(),
