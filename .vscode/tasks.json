@@ -30,6 +30,47 @@
       }
     },
     {
+      "label": "Load Image and Restart Server",
+      "detail": "Loads the Docker image and restarts the Dart Frog server.",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "Ask for Image Name",
+        "Load Docker Image",
+        "Stop and Remove Container",
+        "Start New Container"
+      ],
+      "group": {
+        "kind": "test"
+      },
+      "presentation": {
+        "reveal": "always",
+        "showReuseMessage": false
+      }
+    },
+    {
+      "label": "Load Docker Image",
+      "hide": true,
+      "type": "shell",
+      "command": "sudo docker load -i ./frog-api.tar",
+      "presentation": {
+        "reveal": "silent",
+        "echo": false,
+        "showReuseMessage": false
+      }
+    },
+    {
+      "label": "Stop and Remove Container",
+      "hide": true,
+      "type": "shell",
+      "command": "sudo docker stop frog-app && sudo docker rm frog-app || true",
+    },
+    {
+      "label": "Start New Container",
+      "hide": true,
+      "type": "shell",
+      "command": "sudo docker run -d -p 8080:8080 --name frog-app ${input:imageName}",
+    },
+    {
       "label": "Ask for Image Name",
       "detail": "Prompts for the Docker image name and confirms it.",
       "hide": true,
