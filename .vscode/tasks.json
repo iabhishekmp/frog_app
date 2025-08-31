@@ -1,0 +1,93 @@
+{
+  "version": "2.0.0",
+  "inputs": [
+    {
+      "id": "imageName",
+      "type": "promptString",
+      "description": "Enter the Docker image name:",
+      "default": "frog-api:v1"
+    }
+  ],
+  "tasks": [
+    {
+      "label": "Build Docker Image",
+      "detail": "Builds, tags, and saves the Dart Frog Docker image.",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "Ask for Image Name",
+        "Clean Docker Tar",
+        "Build Project",
+        "Create Docker Image",
+        "Save Docker Tarball"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "showReuseMessage": false
+      }
+    },
+    {
+      "label": "Ask for Image Name",
+      "detail": "Prompts for the Docker image name and confirms it.",
+      "hide": true,
+      "type": "shell",
+      "command": "echo \"Using image: ${input:imageName}\"",
+      "presentation": {
+        "echo": false,
+        "reveal": "always",
+        "showReuseMessage": false
+      }
+    },
+    {
+      "label": "Clean Docker Tar",
+      "detail": "Removes any old Docker tarball without causing an error.",
+      "hide": true,
+      "type": "shell",
+      "command": "rm -f frog-api.tar || true",
+      "presentation": {
+        "echo": false,
+        "reveal": "silent",
+        "showReuseMessage": false
+      }
+    },
+    {
+      "label": "Build Project",
+      "detail": "Cleans, gets dependencies, and bundles the Dart Frog app.",
+      "hide": true,
+      "type": "shell",
+      "command": "flutter clean && flutter pub get && dart_frog build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "showReuseMessage": false
+      }
+    },
+    {
+      "label": "Create Docker Image",
+      "detail": "Builds the new Docker image based on the generated project.",
+      "hide": true,
+      "type": "shell",
+      "command": "docker build -t ${input:imageName} build/",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "showReuseMessage": false
+      }
+    },
+    {
+      "label": "Save Docker Tarball",
+      "detail": "Saves the Docker image to a tarball file.",
+      "hide": true,
+      "type": "shell",
+      "command": "docker save -o frog-api.tar ${input:imageName}",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "showReuseMessage": false
+      }
+    }
+  ]
+}
